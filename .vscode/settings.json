@@ -1,0 +1,10 @@
+{
+    "makefile.configureOnOpen": true,
+    "files.associations": {
+        "math.h": "c",
+        "stdlib.h": "c",
+        "stdio.h": "c",
+        "time.h": "c",
+        "assert.h": "c"
+    }
+}

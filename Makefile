@@ -1,7 +1,8 @@
 CC = cc
 FLAGS = -c -Wall
 LIBS = -lm
-OBS = main.o scheduler.o process.o distributions.o 
+OBS = main.o scheduler.o process.o distributions.o stats.o
+
 
 all: probsched
 
@@ -16,6 +17,9 @@ process.o: probsched.h process.c
 
 distributions.o: probsched.h distributions.c 
 	$(CC) $(FLAGS) distributions.c
+
+stats.o: probsched.h stats.c 
+	$(CC) $(FLAGS) stats.c
 
 probsched: $(OBS)
 	$(CC) -o probsched $(OBS) $(LIBS)
