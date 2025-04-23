@@ -1,25 +1,26 @@
 CC = cc
 FLAGS = -c -Wall
 LIBS = -lm
-OBS = main.o scheduler.o process.o distributions.o stats.o
+OBS = main.o scheduler.o process.o distributions.o 
+
+all: probsched
+
+main.o: probsched.h main.c
+	$(CC) $(FLAGS) main.c
+
+scheduler.o: probsched.h scheduler.c 
+	$(CC) $(FLAGS) scheduler.c
+
+process.o: probsched.h process.c 
+	$(CC) $(FLAGS) process.c
+
+distributions.o: probsched.h distributions.c 
+	$(CC) $(FLAGS) distributions.c
 
 probsched: $(OBS)
-    $(CC) $(OBS) -o probsched $(LIBS)
-
-main.o: main.c
-    $(CC) $(FLAGS) main.c
-
-scheduler.o: scheduler.c scheduler.h
-    $(CC) $(FLAGS) scheduler.c
-
-process.o: process.c process.h
-    $(CC) $(FLAGS) process.c
-
-distributions.o: distributions.c distributions.h
-    $(CC) $(FLAGS) distributions.c
-
-stats.o: stats.c stats.h
-    $(CC) $(FLAGS) stats.c
+	$(CC) -o probsched $(OBS) $(LIBS)
 
 clean:
-    rm -f *.o probsched
+	rm -f probsched *.o 
+	rm -f *~
+	@echo "Remover: Files executáveis."
