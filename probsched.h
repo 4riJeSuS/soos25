@@ -36,9 +36,10 @@ void fcfs(Process **processes, int n);
 void sjf(Process **processes, int n);
 void priority_np(Process **processes, int n);
 void priority_p(Process **processes, int n);
-void round_robin(Process **processes, int n,int quantum);
+void round_robin(Process **processes, int n, int quantum);
 void rate_monotonic(Process **processes, int n);
 void edf(Process **processes, int n);
+void reset_processes(Process **processes, int n);
 
 // Geração de números aleatórios
 int poisson_random(double lambda);

@@ -19,3 +19,13 @@ void print_process(Process *p)
 {
     printf("P%d [arrival=%d, burst=%d, priority=%d]\n", p->id, p->arrival_t, p->burst_t, p->prio);
 }
+
+void reset_processes(Process **processes, int n)
+{
+    for (int i = 0; i < n; i++)
+    {
+        processes[i]->start_t = -1;
+        processes[i]->end_t = -1;
+        processes[i]->remaining_t = processes[i]->burst_t;
+    }
+}

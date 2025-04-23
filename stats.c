@@ -9,7 +9,8 @@ SchedulingStats calculate_stats(Process **processes, int n, int total_time)
     int total_burst = 0;
     int missed = 0;
 
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < n; i++)
+    {
         // Calculate waiting time (end - arrival - burst)
         int waiting = processes[i]->end_t - processes[i]->arrival_t - processes[i]->burst_t;
         total_waiting += waiting;
@@ -22,7 +23,8 @@ SchedulingStats calculate_stats(Process **processes, int n, int total_time)
         total_burst += processes[i]->burst_t;
 
         // Check for missed deadlines
-        if (processes[i]->end_t > processes[i]->deadline) {
+        if (processes[i]->end_t > processes[i]->deadline)
+        {
             missed++;
         }
     }

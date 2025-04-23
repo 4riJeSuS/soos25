@@ -1,0 +1,5 @@
+algorithm=RR
+n=5
+quantum=3
+lambda_arrival=1.0
+lambda_burst=0.5
