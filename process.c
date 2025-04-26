@@ -29,3 +29,32 @@ void reset_processes(Process **processes, int n)
         processes[i]->remaining_t = processes[i]->burst_t;
     }
 }
+
+int load_static_processes(const char *filename, Process **processes)
+{
+    FILE *file = fopen(filename, "r");
+    if (!file)
+    {
+        perror("Erro ao abrir lista estática de processos");
+        exit(1);
+    }
+
+    int id, arrival, burst, prio;
+    int i = 0;
+
+    // Ler cada processo do arquivo
+    while (fscanf(file, "%d %d %d %d", &id, &arrival, &burst, &prio) == 4)
+    {
+        processes[i] = create_process(id, arrival, burst, prio);
+        
+        // Calcular deadline e period
+        processes[i]->deadline = arrival + burst + uniform_random(5, 15);
+        processes[i]->period = uniform_random(10, 20);
+        
+        i++;  // Incrementar o índice do processo
+    }
+
+    fclose(file);
+    
+    return i;  // Retorna o número de processos lidos
+}

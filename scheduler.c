@@ -3,9 +3,27 @@
 #include <limits.h>
 #include "probsched.h"
 
+// Função para calcular o Máximo Divisor Comum (GCD)
+int gcd(int a, int b)
+{
+    while (b != 0)
+    {
+        int temp = b;
+        b = a % b;
+        a = temp;
+    }
+    return a;
+}
+
+// Função para calcular o Mínimo Múltiplo Comum (LCM)
+int lcm(int a, int b)
+{
+    return (a * b) / gcd(a, b);
+}
+
 void fcfs(Process **processes, int n)
 {
-    int current_time = 0; // Changed from 'time' to 'current_time'
+    int current_time = 0;
     for (int i = 0; i < n; i++)
     {
         if (current_time < processes[i]->arrival_t)
@@ -19,6 +37,7 @@ void fcfs(Process **processes, int n)
     SchedulingStats stats = calculate_stats(processes, n, current_time);
     print_stats(&stats);
 }
+
 void sjf(Process **processes, int n)
 {
     int current_time = 0;
@@ -63,6 +82,7 @@ void sjf(Process **processes, int n)
     SchedulingStats stats = calculate_stats(processes, n, current_time);
     print_stats(&stats);
 }
+
 void priority_np(Process **processes, int n)
 {
     int current_time = 0;
@@ -107,6 +127,7 @@ void priority_np(Process **processes, int n)
     SchedulingStats stats = calculate_stats(processes, n, current_time);
     print_stats(&stats);
 }
+
 void round_robin(Process **processes, int n, int quantum)
 {
     int current_time = 0;
@@ -177,9 +198,9 @@ void round_robin(Process **processes, int n, int quantum)
 void rate_monotonic(Process **processes, int n)
 {
     int current_time = 0;
-    int lcm = processes[0]->period;
+    int total_lcm = processes[0]->period;
 
-    // Sort by period (inverse priority)
+    // Ordena os processos pelo período (menor período = maior prioridade)
     for (int i = 0; i < n - 1; i++)
     {
         for (int j = 0; j < n - i - 1; j++)
@@ -193,20 +214,44 @@ void rate_monotonic(Process **processes, int n)
         }
     }
 
-    while (current_time < lcm * 2)
+    // Calcular o LCM de todos os períodos
+    for (int i = 1; i < n; i++)
     {
-        for (int i = 0; i < n; i++)
-        {
-            if (current_time % processes[i]->period == 0)
-            {
-                printf("Processo P%d executado no tempo %d\n",
-                       processes[i]->id, current_time);
-                current_time += processes[i]->burst_t;
-            }
-        }
-        current_time++;
+        total_lcm = lcm(total_lcm, processes[i]->period);
     }
 
+    // Simula a execução dos processos até o 2º LCM
+    printf("Iniciando a execução do algoritmo Rate Monotonic...\n");
+    while (current_time < total_lcm * 2)
+    {
+        int process_executed = 0;
+
+        // Executa os processos no momento certo de acordo com o período
+        for (int i = 0; i < n; i++)
+        {
+            if (current_time % processes[i]->period == 0)  // Verifica se é o tempo correto para o processo
+            {
+                if (processes[i]->start_t == -1)  // Se o processo ainda não foi iniciado
+                {
+                    processes[i]->start_t = current_time;
+                }
+
+                processes[i]->end_t = current_time + processes[i]->burst_t;
+                printf("Processo P%d executado de %d a %d\n", processes[i]->id, current_time, processes[i]->end_t);
+                current_time = processes[i]->end_t;  // Avança o tempo para o final do processo
+                process_executed = 1;
+                break;  // Executa apenas um processo por vez
+            }
+        }
+
+        // Se não houver nenhum processo a ser executado no momento (teoricamente não deveria acontecer no RM)
+        if (!process_executed)
+        {
+            current_time++;  // Apenas avança o tempo
+        }
+    }
+
+    // Exibe as estatísticas após a execução do algoritmo
     SchedulingStats stats = calculate_stats(processes, n, current_time);
     print_stats(&stats);
 }
@@ -261,7 +306,6 @@ void priority_p(Process **processes, int n)
 {
     int current_time = 0;
     int completed = 0;
-    // int running = -1; // indice do processo em execução
     int *remaining = (int *)malloc(n * sizeof(int));
     int *is_completed = (int *)calloc(n, sizeof(int));
 
@@ -275,7 +319,6 @@ void priority_p(Process **processes, int n)
         int highest_prio = -1;
         int max_prio = INT_MIN;
 
-        // Encontrar o processo com amior piroridade que já chegou
         for (int i = 0; i < n; i++)
         {
             if (!is_completed[i] && processes[i]->arrival_t <= current_time)
@@ -294,18 +337,15 @@ void priority_p(Process **processes, int n)
             continue;
         }
 
-        // Marcar o tempo de inicio se for a primeira execucao
         if (processes[highest_prio]->start_t == -1)
         {
             processes[highest_prio]->start_t = current_time;
         }
 
-        // Executar o processo por 1 unidade de tempo
         remaining[highest_prio]--;
         printf("Tempo %d: Processo P%d executa (resta %d)\n", current_time, processes[highest_prio]->id, remaining[highest_prio]);
         current_time++;
 
-        // Se o processo terminou
         if (remaining[highest_prio] == 0)
         {
             processes[highest_prio]->end_t = current_time;

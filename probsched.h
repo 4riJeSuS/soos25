@@ -18,6 +18,7 @@ typedef struct
 // Funções de processos
 Process *create_process(int id, int arrival, int burst, int priority);
 void print_process(Process *p);
+void reset_processes(Process **processes, int n);
 
 typedef struct
 {
@@ -39,7 +40,7 @@ void priority_p(Process **processes, int n);
 void round_robin(Process **processes, int n, int quantum);
 void rate_monotonic(Process **processes, int n);
 void edf(Process **processes, int n);
-void reset_processes(Process **processes, int n);
+
 
 // Geração de números aleatórios
 int poisson_random(double lambda);
@@ -47,5 +48,21 @@ int exponential_random(double lambda);
 int normal_random(double mean, double stddev);
 int uniform_random(int min, int max);
 void seed_rng(unsigned int seed);
+
+//estrutura de configuracao
+typedef struct 
+{
+    char algorithm[20];
+    int n;
+    int quantum;
+    double lambda_arrival;
+    double lambda_burst;
+    char mode[10]; //random ou static
+    char input_file[50]; //ficheiro com processos
+}Config;
+
+//Leitura de ficheiro com lista estatica de processos
+int load_static_processes(const char *filename, Process **processes);
+
 
 #endif

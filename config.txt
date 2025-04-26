@@ -1,5 +1,7 @@
-algorithm=RR
-n=5
+mode=static
+input_file=processos.txt
+algorithm=ALL
+n=6
 quantum=3
 lambda_arrival=1.0
 lambda_burst=0.5

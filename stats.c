@@ -8,34 +8,45 @@ SchedulingStats calculate_stats(Process **processes, int n, int total_time)
     int total_turnaround = 0;
     int total_burst = 0;
     int missed = 0;
+    int completed = 0;
 
     for (int i = 0; i < n; i++)
     {
-        // Calculate waiting time (end - arrival - burst)
-        int waiting = processes[i]->end_t - processes[i]->arrival_t - processes[i]->burst_t;
-        total_waiting += waiting;
+        Process *p = processes[i];
 
-        // Calculate turnaround time (end - arrival)
-        int turnaround = processes[i]->end_t - processes[i]->arrival_t;
+        // Ignorar processos que não foram executados
+        if (p->end_t == -1 || p->start_t == -1)
+            continue;
+
+        // Calcular turnaround: fim - chegada
+        int turnaround = p->end_t - p->arrival_t;
         total_turnaround += turnaround;
 
-        // Sum burst times for CPU utilization
-        total_burst += processes[i]->burst_t;
+        // Calcular tempo de espera: início - chegada (nunca negativo)
+        int waiting = p->start_t - p->arrival_t;
+        if (waiting < 0) waiting = 0;
+        total_waiting += waiting;
 
-        // Check for missed deadlines
-        if (processes[i]->end_t > processes[i]->deadline)
-        {
+        // Somar burst para calcular utilização da CPU
+        total_burst += p->burst_t;
+
+        // Verificar deadlines
+        if (p->end_t > p->deadline)
             missed++;
-        }
+
+        completed++;
     }
 
-    // Calculate averages and metrics
-    stats.avg_waiting_time = (double)total_waiting / n;
-    stats.avg_turnaround_time = (double)total_turnaround / n;
-    stats.cpu_utilization = ((double)total_burst / total_time) * 100.0;
-    stats.throughput = (double)n / total_time;
-    stats.missed_deadlines = missed;
+    // Calcular métricas finais se houver processos válidos
+    if (completed > 0)
+    {
+        stats.avg_waiting_time = (double)total_waiting / completed;
+        stats.avg_turnaround_time = (double)total_turnaround / completed;
+        stats.cpu_utilization = ((double)total_burst / total_time) * 100.0;
+        stats.throughput = (double)completed / total_time;
+    }
 
+    stats.missed_deadlines = missed;
     return stats;
 }
 
