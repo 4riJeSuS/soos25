@@ -46,15 +46,15 @@ int load_static_processes(const char *filename, Process **processes)
     while (fscanf(file, "%d %d %d %d", &id, &arrival, &burst, &prio) == 4)
     {
         processes[i] = create_process(id, arrival, burst, prio);
-        
+
         // Calcular deadline e period
         processes[i]->deadline = arrival + burst + uniform_random(5, 15);
         processes[i]->period = uniform_random(10, 20);
-        
-        i++;  // Incrementar o índice do processo
+
+        i++; // Incrementar o índice do processo
     }
 
     fclose(file);
-    
-    return i;  // Retorna o número de processos lidos
+
+    return i; // Retorna o número de processos lidos
 }

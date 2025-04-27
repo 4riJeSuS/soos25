@@ -103,8 +103,7 @@ int main(int argc, char *argv[])
     if (strcmp(config.algorithm, "ALL") == 0)
     {
         const char *algorithms[] = {
-            "FCFS", "SJF", "PRIORITY_NP", "PRIORITY_P", "RR", "RM", "EDF"
-        };
+            "FCFS", "SJF", "PRIORITY_NP", "PRIORITY_P", "RR", "RM", "EDF"};
         int num_algorithms = sizeof(algorithms) / sizeof(algorithms[0]);
 
         // Guardar cópia original

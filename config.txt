@@ -1,7 +1,7 @@
 mode=static
 input_file=processos.txt
 algorithm=ALL
-n=6
-quantum=3
+n=2
+quantum=2
 lambda_arrival=1.0
 lambda_burst=0.5

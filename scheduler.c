@@ -229,25 +229,25 @@ void rate_monotonic(Process **processes, int n)
         // Executa os processos no momento certo de acordo com o período
         for (int i = 0; i < n; i++)
         {
-            if (current_time % processes[i]->period == 0)  // Verifica se é o tempo correto para o processo
+            if (current_time % processes[i]->period == 0) // Verifica se é o tempo correto para o processo
             {
-                if (processes[i]->start_t == -1)  // Se o processo ainda não foi iniciado
+                if (processes[i]->start_t == -1) // Se o processo ainda não foi iniciado
                 {
                     processes[i]->start_t = current_time;
                 }
 
                 processes[i]->end_t = current_time + processes[i]->burst_t;
                 printf("Processo P%d executado de %d a %d\n", processes[i]->id, current_time, processes[i]->end_t);
-                current_time = processes[i]->end_t;  // Avança o tempo para o final do processo
+                current_time = processes[i]->end_t; // Avança o tempo para o final do processo
                 process_executed = 1;
-                break;  // Executa apenas um processo por vez
+                break; // Executa apenas um processo por vez
             }
         }
 
         // Se não houver nenhum processo a ser executado no momento (teoricamente não deveria acontecer no RM)
         if (!process_executed)
         {
-            current_time++;  // Apenas avança o tempo
+            current_time++; // Apenas avança o tempo
         }
     }
 

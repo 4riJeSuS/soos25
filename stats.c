@@ -24,7 +24,8 @@ SchedulingStats calculate_stats(Process **processes, int n, int total_time)
 
         // Calcular tempo de espera: início - chegada (nunca negativo)
         int waiting = p->start_t - p->arrival_t;
-        if (waiting < 0) waiting = 0;
+        if (waiting < 0)
+            waiting = 0;
         total_waiting += waiting;
 
         // Somar burst para calcular utilização da CPU
